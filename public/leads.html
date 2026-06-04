@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bird Coders — Leads Dashboard</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        padding: 24px 16px;
+        background: #f0f2f5;
+        color: #111b21;
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      nav {
+        display: flex;
+        gap: 16px;
+        font-size: 14px;
+        margin-bottom: 18px;
+      }
+
+      nav a {
+        color: #075e54;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      nav a:hover {
+        text-decoration: underline;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+
+      .header h1 {
+        font-size: 22px;
+      }
+
+      .header .count {
+        font-size: 13px;
+        color: #667781;
+      }
+
+      .refresh {
+        padding: 9px 16px;
+        border: none;
+        border-radius: 8px;
+        background: #008069;
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .refresh:hover {
+        background: #017561;
+      }
+
+      .table-wrap {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13.5px;
+      }
+
+      thead {
+        background: #f6f8fa;
+      }
+
+      th,
+      td {
+        padding: 11px 14px;
+        text-align: left;
+        border-bottom: 1px solid #eceff1;
+        white-space: nowrap;
+      }
+
+      td.brief {
+        white-space: normal;
+        max-width: 240px;
+        color: #3b4a54;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 3px 9px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .badge.hot {
+        background: #ffe0e0;
+        color: #c62828;
+      }
+
+      .badge.warm {
+        background: #fff2cc;
+        color: #b07400;
+      }
+
+      .badge.cold {
+        background: #e4e8eb;
+        color: #5a6b75;
+      }
+
+      .state {
+        padding: 40px;
+        text-align: center;
+        color: #667781;
+        font-size: 15px;
+      }
+
+      .state.error {
+        color: #8a1f1f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <nav>
+        <a href="/index.html">Chat</a>
+        <a href="/lead.html">Lead Form</a>
+        <a href="/leads.html">Leads Dashboard</a>
+      </nav>
+
+      <div class="header">
+        <div>
+          <h1>Leads Dashboard</h1>
+          <div class="count" id="count"></div>
+        </div>
+        <button class="refresh" id="refreshButton">Refresh</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Score</th>
+              <th>Name</th>
+              <th>Company</th>
+              <th>WhatsApp</th>
+              <th>Email</th>
+              <th>Service</th>
+              <th>Budget</th>
+              <th>Timeline</th>
+              <th>Brief</th>
+              <th>Status</th>
+              <th>Source</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+        <div class="state" id="state">Loading leads…</div>
+      </div>
+    </div>
+
+    <script>
+      const tableBody = document.getElementById("tableBody");
+      const stateLabel = document.getElementById("state");
+      const countLabel = document.getElementById("count");
+      const refreshButton = document.getElementById("refreshButton");
+
+      const BUDGET_LABELS = {
+        under_500: "Under $500",
+        "500_1500": "$500–$1,500",
+        "1500_5000": "$1,500–$5,000",
+        "5000_plus": "$5,000+",
+        uncertain: "Not sure",
+      };
+
+      const TIMELINE_LABELS = {
+        within_1_week: "Within 1 week",
+        "2_3_weeks": "2–3 weeks",
+        just_exploring: "Just exploring",
+      };
+
+      function labelFor(map, value) {
+        if (!value) {
+          return "—";
+        }
+        return map[value] || value;
+      }
+
+      function formatDate(value) {
+        if (!value) {
+          return "—";
+        }
+        const date = new Date(value);
+        return date.toLocaleString([], {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      function createCell(text, className) {
+        const cell = document.createElement("td");
+        if (className) {
+          cell.className = className;
+        }
+        cell.textContent = text;
+        return cell;
+      }
+
+      function createScoreCell(score) {
+        const cell = document.createElement("td");
+        const badge = document.createElement("span");
+        badge.className = `badge ${score}`;
+        badge.textContent = score;
+        cell.appendChild(badge);
+        return cell;
+      }
+
+      function renderLeads(leads) {
+        tableBody.replaceChildren();
+
+        if (leads.length === 0) {
+          stateLabel.className = "state";
+          stateLabel.textContent = "No leads captured yet.";
+          countLabel.textContent = "";
+          return;
+        }
+
+        stateLabel.textContent = "";
+        countLabel.textContent = `${leads.length} lead${leads.length === 1 ? "" : "s"}`;
+
+        for (const lead of leads) {
+          const row = document.createElement("tr");
+          row.appendChild(createScoreCell(lead.score));
+          row.appendChild(createCell(lead.fullName));
+          row.appendChild(createCell(lead.company || "—"));
+          row.appendChild(createCell(lead.whatsappNumber || "—"));
+          row.appendChild(createCell(lead.email || "—"));
+          row.appendChild(createCell(lead.service || "—"));
+          row.appendChild(createCell(labelFor(BUDGET_LABELS, lead.budget)));
+          row.appendChild(createCell(labelFor(TIMELINE_LABELS, lead.timeline)));
+          row.appendChild(createCell(lead.brief || "—", "brief"));
+          row.appendChild(createCell(lead.status));
+          row.appendChild(createCell(lead.source));
+          row.appendChild(createCell(formatDate(lead.createdAt)));
+          tableBody.appendChild(row);
+        }
+      }
+
+      async function loadLeads() {
+        stateLabel.className = "state";
+        stateLabel.textContent = "Loading leads…";
+        tableBody.replaceChildren();
+
+        try {
+          const response = await fetch("/api/leads");
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Failed to load leads.");
+          }
+
+          renderLeads(data.leads);
+        } catch (error) {
+          stateLabel.className = "state error";
+          stateLabel.textContent = error.message;
+          countLabel.textContent = "";
+        }
+      }
+
+      refreshButton.addEventListener("click", loadLeads);
+      loadLeads();
+    </script>
+  </body>
+</html>

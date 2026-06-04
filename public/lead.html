@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bird Coders — Get a Free Consultation</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 24px 16px;
+        background: #f0f2f5;
+        color: #111b21;
+      }
+
+      nav {
+        display: flex;
+        gap: 16px;
+        font-size: 14px;
+        margin-bottom: 18px;
+      }
+
+      nav a {
+        color: #075e54;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      nav a:hover {
+        text-decoration: underline;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 520px;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+      }
+
+      .card-header {
+        background: #008069;
+        color: #ffffff;
+        padding: 20px 24px;
+      }
+
+      .card-header h1 {
+        font-size: 20px;
+      }
+
+      .card-header p {
+        font-size: 13px;
+        opacity: 0.9;
+        margin-top: 4px;
+      }
+
+      form {
+        padding: 22px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #3b4a54;
+      }
+
+      input,
+      select,
+      textarea {
+        font-size: 15px;
+        padding: 10px 12px;
+        border: 1px solid #d1d7db;
+        border-radius: 8px;
+        outline: none;
+        font-weight: 400;
+        color: #111b21;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: #008069;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      button {
+        margin-top: 6px;
+        padding: 13px;
+        border: none;
+        border-radius: 8px;
+        background: #008069;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s ease;
+      }
+
+      button:hover {
+        background: #017561;
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .feedback {
+        padding: 12px 14px;
+        border-radius: 8px;
+        font-size: 14px;
+        display: none;
+      }
+
+      .feedback.success {
+        display: block;
+        background: #d9fdd3;
+        color: #0b6b2e;
+      }
+
+      .feedback.error {
+        display: block;
+        background: #fde0e0;
+        color: #8a1f1f;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="/index.html">Chat</a>
+      <a href="/lead.html">Lead Form</a>
+      <a href="/leads.html">Leads Dashboard</a>
+    </nav>
+
+    <div class="card">
+      <div class="card-header">
+        <h1>Get a Free Consultation</h1>
+        <p>Tell us about your project and our team will reach out.</p>
+      </div>
+
+      <form id="leadForm" autocomplete="off">
+        <div class="feedback" id="feedback"></div>
+
+        <label>
+          Full Name *
+          <input type="text" name="fullName" required />
+        </label>
+
+        <label>
+          Company Name
+          <input type="text" name="company" />
+        </label>
+
+        <label>
+          WhatsApp Number
+          <input type="tel" name="whatsappNumber" placeholder="+92 300 0000000" />
+        </label>
+
+        <label>
+          Email
+          <input type="email" name="email" />
+        </label>
+
+        <label>
+          Service Required
+          <select name="service">
+            <option value="">Select a service</option>
+            <option value="Website Development">Website Development</option>
+            <option value="Mobile App Development">Mobile App Development</option>
+            <option value="Custom Software">Custom Software</option>
+            <option value="AI Automation">AI Automation</option>
+            <option value="E-commerce Store">E-commerce Store</option>
+            <option value="Digital Marketing">Digital Marketing</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+
+        <label>
+          Do you already have a website/business?
+          <select name="hasWebsite">
+            <option value="">Select</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+          </select>
+        </label>
+
+        <label>
+          Expected Timeline
+          <select name="timeline">
+            <option value="">Select a timeline</option>
+            <option value="within_1_week">Within 1 week</option>
+            <option value="2_3_weeks">2–3 weeks</option>
+            <option value="just_exploring">Just exploring</option>
+          </select>
+        </label>
+
+        <label>
+          Budget Range
+          <select name="budget">
+            <option value="">Select a budget</option>
+            <option value="under_500">Under $500</option>
+            <option value="500_1500">$500 – $1,500</option>
+            <option value="1500_5000">$1,500 – $5,000</option>
+            <option value="5000_plus">$5,000+</option>
+            <option value="uncertain">Not sure yet</option>
+          </select>
+        </label>
+
+        <label>
+          Project Brief
+          <textarea name="brief" placeholder="Briefly describe your project"></textarea>
+        </label>
+
+        <button type="submit" id="submitButton">Submit</button>
+      </form>
+    </div>
+
+    <script>
+      const leadForm = document.getElementById("leadForm");
+      const submitButton = document.getElementById("submitButton");
+      const feedback = document.getElementById("feedback");
+
+      function showFeedback(message, variant) {
+        feedback.textContent = message;
+        feedback.className = `feedback ${variant}`;
+      }
+
+      function readHasWebsite(rawValue) {
+        if (rawValue === "true") {
+          return true;
+        }
+        if (rawValue === "false") {
+          return false;
+        }
+        return null;
+      }
+
+      async function handleSubmit(event) {
+        event.preventDefault();
+        submitButton.disabled = true;
+
+        const formData = new FormData(leadForm);
+        const payload = {
+          fullName: formData.get("fullName"),
+          company: formData.get("company"),
+          whatsappNumber: formData.get("whatsappNumber"),
+          email: formData.get("email"),
+          service: formData.get("service"),
+          hasWebsite: readHasWebsite(formData.get("hasWebsite")),
+          timeline: formData.get("timeline"),
+          budget: formData.get("budget"),
+          brief: formData.get("brief"),
+        };
+
+        try {
+          const response = await fetch("/api/leads", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Failed to submit. Please try again.");
+          }
+
+          showFeedback(
+            `Thank you! Your request was received (lead scored: ${data.lead.score.toUpperCase()}). Our team will be in touch shortly.`,
+            "success"
+          );
+          leadForm.reset();
+        } catch (error) {
+          showFeedback(error.message, "error");
+        } finally {
+          submitButton.disabled = false;
+        }
+      }
+
+      leadForm.addEventListener("submit", handleSubmit);
+    </script>
+  </body>
+</html>
