@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import { runAgent, isChatMessage } from "../openai";
+import { runAgent, isChatMessage } from "../openai.js";
 
 export const chatRouter = Router();
 

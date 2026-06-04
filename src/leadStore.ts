@@ -1,4 +1,4 @@
-import { getSql } from "./db";
+import { getSql } from "./db.js";
 
 export type LeadSource = "form" | "chat";
 export type LeadScore = "hot" | "warm" | "cold";

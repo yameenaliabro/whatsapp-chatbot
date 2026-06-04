@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import { asOptionalString, listLeads, saveLead } from "../leadStore";
+import { asOptionalString, listLeads, saveLead } from "../leadStore.js";
 
 export const leadsRouter = Router();
 

@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { asOptionalString, saveLead, type LeadInput } from "./leadStore";
+import { asOptionalString, saveLead, type LeadInput } from "./leadStore.js";
 
 export type ChatRole = "user" | "assistant";
 

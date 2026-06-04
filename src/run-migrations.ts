@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { getSql } from "./db";
+import { getSql } from "./db.js";
 
 async function runMigrations(): Promise<void> {
   const sql = getSql();
